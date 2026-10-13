@@ -1,8 +1,8 @@
 <div align="center">
   <img src="Resources/Brand/AppIcon.png" width="104" alt="coindex icon" />
   <h1>coindex</h1>
-  <p><strong>Agent 驱动的 Codex 多对话目标整理与跟进清单。</strong></p>
-  <p>An agent-driven goal and follow-up workspace for your Codex conversations.</p>
+  <p><strong>多台机器、多个 Codex 会话，帮你记住交代给 AI 的事。</strong></p>
+  <p>An agent-driven follow-up list for the work you delegated across machines and Codex conversations.</p>
   <p>
     <a href="https://github.com/Junming-Liang/coindex/releases/latest"><img src="https://img.shields.io/github/v/release/Junming-Liang/coindex" alt="Latest release" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
@@ -12,11 +12,13 @@
   <p><a href="https://github.com/Junming-Liang/coindex/releases/tag/v1.9.0">下载 1.9.0</a> · <a href="#快速开始">快速开始</a> · <a href="docs/user-guide.md">使用指南</a> · <a href="https://github.com/Junming-Liang/coindex/issues">反馈问题</a></p>
 </div>
 
-**coindex 用 AI 整理 Agent 持续阅读多个 Codex 对话，提取你真正想完成的目标，并生成一份统一的跟进清单（follow-up list）。** 每个目标都写清楚：**要做成什么、做到哪里、下一步做什么、来自哪个对话**。你可以查看原文依据，再一键催办原 Codex Agent 继续推进。
+**AI 干完活了，你却已经忘了当初让它干什么。**
 
-当你同时开着多个对话开发功能、排查错误、运行评测和准备发布时，coindex 会把分散在对话里的“还没完成”“等结果”“等你决定”整理到一个工作台。它支持本机和你添加的 SSH 来源，复用你自己的 Codex 登录与模型能力。
+你在 Mac 上让一个 Agent 修 bug，在 SSH 机器上让另一个跑评测，又开了几个会话做功能、准备发布。任务越开越多，等结果陆续出来，最初的要求已经埋在聊天记录里：哪些事交代过、在哪台机器上、做到哪一步、还有什么需要你验收或继续推进，都得重新翻一遍。
 
-**多个 Codex 对话 → 整理 Agent → 目标 / 进度 / 下一步 → 持续跟进清单 → 回到原 Agent 继续工作**
+**coindex 用一个整理 Agent，帮你记住交给其他 Agent 的工作。** 它持续阅读本机和你添加的 SSH 机器上的 Codex 会话，找出每个对话里的用户目标，把**当初要做什么、现在做到哪里、接下来该做什么、原对话在哪**整理成统一的跟进清单（follow-up list）。打开应用，就能找回那些已经忘记、还在执行或等你处理的事；需要续办时，可以查看原文依据，再一键催办原 Codex Agent。
+
+**多台机器上的 Codex 会话 → 整理 Agent 找回目标 → 目标 / 进度 / 下一步 → 跟进清单 → 回到原 Agent 继续工作**
 
 ![Agent 整理后的目标跟进清单：整体目标、当前进度和下一步](docs/assets/overview.png)
 
@@ -26,6 +28,7 @@
 
 ## 目录
 
+- [解决什么问题](#解决什么问题)
 - [功能：Agent 如何整理目标与跟进](#功能)
 - [界面截图与使用演示](#界面截图与使用演示)
 - [安装](#安装)
@@ -39,15 +42,29 @@
 - [参与贡献](#参与贡献)
 - [许可证与致谢](#许可证与致谢)
 
+## 解决什么问题
+
+把工作交给 AI 很快，记住交出去的所有工作却很难。尤其是任务分散在多台机器和多个会话里时，AI 的回复已经到了，你可能还不知道这件事该怎么收尾。
+
+| 多会话工作中的困扰 | coindex 帮你找回的信息 |
+| --- | --- |
+| AI 已经干完，我忘了当初让它做什么 | 用整体目标命名跟进条目，保留最初要达成的事和原文依据 |
+| 会话散在本机和几台 SSH 机器上，忘了去哪找 | 在一张清单里查看各来源的目标，并关联原机器与对话 |
+| 看见“已完成”或“PR 已提交”，却忘了有没有验收 | 汇总已有进度，指出仍需校对、确认或决定的下一步 |
+| 一部分还在跑，一部分停住了，不知道先跟哪件 | 按进行中、结果校对、继续推进、等待结果和需要决定分类 |
+| 找回了任务，还得重新给 Agent 解释上下文 | 一键把目标、进度和下一步发回原对话，让原 Agent 接着推进 |
+
+清单依据已读取的会话记录整理。它帮你找回工作和跟进线索；结果是否正确、产物是否可用，仍需要实际验收。
+
 ## 功能
 
-### 1. 让整理 Agent 阅读多个 Codex 对话
+### 1. 让整理 Agent 汇总多台机器的 Codex 会话
 
 连接本机 Codex，并按需添加 SSH 机器。coindex 自动发现新增会话，定期读取发生变化的记录，再交给整理 Agent 分析用户目标、执行进度和未处理事项。你无需逐个打开对话、复制日志或手动维护一张任务表。
 
 整理 Agent 通过你自己的 Codex CLI 和模型工作，默认 `gpt-6-luna` / `max`，可在设置中调整。它根据已有记录给出结构化判断，负责生成和更新跟进清单；原来的执行 Agent 继续留在各自 Codex 对话中。
 
-### 2. 按整体目标组织工作，持续更新进度
+### 2. 记住当初交代的目标，持续更新进度
 
 每个对话可以包含多个独立目标，coindex 分别跟踪。同一对话中，同一目标经历开发、提交、排队、验收和续办时，更新原条目的进度与下一步，保留身份和提醒，避免把每个阶段堆成重复待办。
 
@@ -63,7 +80,7 @@
 
 这些都是演示用例。自动分析依据对话最后记录，不主动访问 CI、评测或发布平台核实实时结果；“结果校对”用来提醒你完成实际验收。
 
-### 3. 把分散的工作变成可操作的 follow-up list
+### 3. 在一张 follow-up list 里，看到该跟进什么
 
 工作台将各来源目标统一展示，可按类型、来源和关键词筛选。每条关联对话的条目包含：
 
