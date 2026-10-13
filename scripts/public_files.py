@@ -14,4 +14,6 @@ def public_files():
     files += [ROOT/"Resources/CustomPets/coindex-cat"/name for name in
               ("pet.json", "spritesheet.png", "generation.json", "generation-prompt.md", "source-atlas.png")]
     files += [ROOT/"Resources/Brand/AppIcon.png"]
+    files += [ROOT/"docs/assets"/name for name in
+              ("overview.png", "task-detail.png", "conversations.png", "connections.png", "workflow-demo.gif")]
     return sorted(set(files))
