@@ -15,5 +15,6 @@ def public_files():
               ("pet.json", "spritesheet.png", "generation.json", "generation-prompt.md", "source-atlas.png")]
     files += [ROOT/"Resources/Brand/AppIcon.png"]
     files += [ROOT/"docs/assets"/name for name in
-              ("overview.png", "task-detail.png", "conversations.png", "connections.png", "workflow-demo.gif")]
+              ("overview.png", "task-detail.png", "conversations.png", "connections.png", "workflow-demo.gif",
+               "workflow-poster.png", "nudge-demo.gif", "nudge-story.png")]
     return sorted(set(files))
