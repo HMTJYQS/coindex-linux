@@ -1,0 +1,1348 @@
+{
+  "generator": "built-in imagegen",
+  "sourceSize": [
+    1027,
+    1531
+  ],
+  "atlasSize": [
+    1536,
+    2288
+  ],
+  "cellSize": [
+    192,
+    208
+  ],
+  "requiredFrames": [
+    6,
+    8,
+    8,
+    4,
+    5,
+    8,
+    6,
+    6,
+    6,
+    8,
+    8
+  ],
+  "occupiedFrames": 73,
+  "idleLoopClosure": "Repeat the first pose after the five generated idle poses.",
+  "sourceSHA256": "8adf10c28c157872d40a2ecc2223e2146519cf34591045e8db7032c49cdb0b4e",
+  "atlasSHA256": "fa1ab4a221b74d5c7efc1be77a037ea27abb88d4d3ebc1ea02d799acfb9d85ec",
+  "frames": [
+    {
+      "row": 0,
+      "column": 0,
+      "sourceBox": [
+        12,
+        5,
+        133,
+        132
+      ],
+      "size": [
+        139,
+        146
+      ],
+      "destination": [
+        26,
+        44
+      ]
+    },
+    {
+      "row": 0,
+      "column": 1,
+      "sourceBox": [
+        139,
+        0,
+        268,
+        131
+      ],
+      "size": [
+        148,
+        150
+      ],
+      "destination": [
+        214,
+        40
+      ]
+    },
+    {
+      "row": 0,
+      "column": 2,
+      "sourceBox": [
+        264,
+        6,
+        400,
+        134
+      ],
+      "size": [
+        156,
+        147
+      ],
+      "destination": [
+        402,
+        43
+      ]
+    },
+    {
+      "row": 0,
+      "column": 3,
+      "sourceBox": [
+        403,
+        0,
+        531,
+        131
+      ],
+      "size": [
+        147,
+        150
+      ],
+      "destination": [
+        598,
+        40
+      ]
+    },
+    {
+      "row": 0,
+      "column": 4,
+      "sourceBox": [
+        534,
+        5,
+        677,
+        132
+      ],
+      "size": [
+        164,
+        146
+      ],
+      "destination": [
+        782,
+        44
+      ]
+    },
+    {
+      "row": 0,
+      "column": 5,
+      "sourceBox": [
+        12,
+        5,
+        133,
+        132
+      ],
+      "size": [
+        139,
+        146
+      ],
+      "destination": [
+        986,
+        44
+      ]
+    },
+    {
+      "row": 1,
+      "column": 0,
+      "sourceBox": [
+        8,
+        127,
+        137,
+        254
+      ],
+      "size": [
+        125,
+        123
+      ],
+      "destination": [
+        33,
+        275
+      ]
+    },
+    {
+      "row": 1,
+      "column": 1,
+      "sourceBox": [
+        133,
+        126,
+        271,
+        248
+      ],
+      "size": [
+        134,
+        118
+      ],
+      "destination": [
+        221,
+        280
+      ]
+    },
+    {
+      "row": 1,
+      "column": 2,
+      "sourceBox": [
+        260,
+        126,
+        394,
+        254
+      ],
+      "size": [
+        130,
+        124
+      ],
+      "destination": [
+        415,
+        274
+      ]
+    },
+    {
+      "row": 1,
+      "column": 3,
+      "sourceBox": [
+        382,
+        128,
+        524,
+        249
+      ],
+      "size": [
+        138,
+        117
+      ],
+      "destination": [
+        603,
+        281
+      ]
+    },
+    {
+      "row": 1,
+      "column": 4,
+      "sourceBox": [
+        507,
+        127,
+        652,
+        246
+      ],
+      "size": [
+        141,
+        116
+      ],
+      "destination": [
+        793,
+        282
+      ]
+    },
+    {
+      "row": 1,
+      "column": 5,
+      "sourceBox": [
+        633,
+        122,
+        776,
+        260
+      ],
+      "size": [
+        139,
+        134
+      ],
+      "destination": [
+        986,
+        264
+      ]
+    },
+    {
+      "row": 1,
+      "column": 6,
+      "sourceBox": [
+        760,
+        128,
+        898,
+        243
+      ],
+      "size": [
+        134,
+        112
+      ],
+      "destination": [
+        1181,
+        286
+      ]
+    },
+    {
+      "row": 1,
+      "column": 7,
+      "sourceBox": [
+        878,
+        126,
+        1027,
+        245
+      ],
+      "size": [
+        145,
+        116
+      ],
+      "destination": [
+        1367,
+        282
+      ]
+    },
+    {
+      "row": 2,
+      "column": 0,
+      "sourceBox": [
+        0,
+        233,
+        146,
+        367
+      ],
+      "size": [
+        146,
+        134
+      ],
+      "destination": [
+        23,
+        472
+      ]
+    },
+    {
+      "row": 2,
+      "column": 1,
+      "sourceBox": [
+        127,
+        236,
+        275,
+        366
+      ],
+      "size": [
+        148,
+        130
+      ],
+      "destination": [
+        214,
+        476
+      ]
+    },
+    {
+      "row": 2,
+      "column": 2,
+      "sourceBox": [
+        256,
+        237,
+        402,
+        362
+      ],
+      "size": [
+        146,
+        125
+      ],
+      "destination": [
+        407,
+        481
+      ]
+    },
+    {
+      "row": 2,
+      "column": 3,
+      "sourceBox": [
+        384,
+        234,
+        530,
+        361
+      ],
+      "size": [
+        146,
+        127
+      ],
+      "destination": [
+        599,
+        479
+      ]
+    },
+    {
+      "row": 2,
+      "column": 4,
+      "sourceBox": [
+        508,
+        237,
+        659,
+        361
+      ],
+      "size": [
+        151,
+        124
+      ],
+      "destination": [
+        788,
+        482
+      ]
+    },
+    {
+      "row": 2,
+      "column": 5,
+      "sourceBox": [
+        637,
+        241,
+        775,
+        358
+      ],
+      "size": [
+        138,
+        117
+      ],
+      "destination": [
+        987,
+        489
+      ]
+    },
+    {
+      "row": 2,
+      "column": 6,
+      "sourceBox": [
+        765,
+        239,
+        905,
+        367
+      ],
+      "size": [
+        140,
+        128
+      ],
+      "destination": [
+        1178,
+        478
+      ]
+    },
+    {
+      "row": 2,
+      "column": 7,
+      "sourceBox": [
+        889,
+        241,
+        1027,
+        369
+      ],
+      "size": [
+        138,
+        128
+      ],
+      "destination": [
+        1371,
+        478
+      ]
+    },
+    {
+      "row": 3,
+      "column": 0,
+      "sourceBox": [
+        9,
+        362,
+        116,
+        505
+      ],
+      "size": [
+        119,
+        160
+      ],
+      "destination": [
+        36,
+        654
+      ]
+    },
+    {
+      "row": 3,
+      "column": 1,
+      "sourceBox": [
+        131,
+        361,
+        257,
+        504
+      ],
+      "size": [
+        141,
+        160
+      ],
+      "destination": [
+        217,
+        654
+      ]
+    },
+    {
+      "row": 3,
+      "column": 2,
+      "sourceBox": [
+        271,
+        357,
+        391,
+        499
+      ],
+      "size": [
+        134,
+        158
+      ],
+      "destination": [
+        413,
+        656
+      ]
+    },
+    {
+      "row": 3,
+      "column": 3,
+      "sourceBox": [
+        390,
+        358,
+        519,
+        505
+      ],
+      "size": [
+        144,
+        164
+      ],
+      "destination": [
+        600,
+        650
+      ]
+    },
+    {
+      "row": 4,
+      "column": 0,
+      "sourceBox": [
+        13,
+        517,
+        158,
+        619
+      ],
+      "size": [
+        121,
+        85
+      ],
+      "destination": [
+        35,
+        937
+      ]
+    },
+    {
+      "row": 4,
+      "column": 1,
+      "sourceBox": [
+        144,
+        511,
+        309,
+        617
+      ],
+      "size": [
+        138,
+        89
+      ],
+      "destination": [
+        219,
+        931
+      ]
+    },
+    {
+      "row": 4,
+      "column": 2,
+      "sourceBox": [
+        304,
+        493,
+        500,
+        600
+      ],
+      "size": [
+        164,
+        90
+      ],
+      "destination": [
+        398,
+        916
+      ]
+    },
+    {
+      "row": 4,
+      "column": 3,
+      "sourceBox": [
+        478,
+        509,
+        645,
+        619
+      ],
+      "size": [
+        140,
+        92
+      ],
+      "destination": [
+        602,
+        930
+      ]
+    },
+    {
+      "row": 4,
+      "column": 4,
+      "sourceBox": [
+        634,
+        529,
+        772,
+        616
+      ],
+      "size": [
+        115,
+        73
+      ],
+      "destination": [
+        806,
+        946
+      ]
+    },
+    {
+      "row": 5,
+      "column": 0,
+      "sourceBox": [
+        0,
+        625,
+        114,
+        758
+      ],
+      "size": [
+        131,
+        153
+      ],
+      "destination": [
+        30,
+        1077
+      ]
+    },
+    {
+      "row": 5,
+      "column": 1,
+      "sourceBox": [
+        127,
+        625,
+        243,
+        755
+      ],
+      "size": [
+        133,
+        149
+      ],
+      "destination": [
+        221,
+        1081
+      ]
+    },
+    {
+      "row": 5,
+      "column": 2,
+      "sourceBox": [
+        258,
+        613,
+        373,
+        756
+      ],
+      "size": [
+        132,
+        164
+      ],
+      "destination": [
+        414,
+        1066
+      ]
+    },
+    {
+      "row": 5,
+      "column": 3,
+      "sourceBox": [
+        387,
+        611,
+        496,
+        746
+      ],
+      "size": [
+        125,
+        155
+      ],
+      "destination": [
+        609,
+        1075
+      ]
+    },
+    {
+      "row": 5,
+      "column": 4,
+      "sourceBox": [
+        511,
+        615,
+        640,
+        757
+      ],
+      "size": [
+        148,
+        163
+      ],
+      "destination": [
+        790,
+        1067
+      ]
+    },
+    {
+      "row": 5,
+      "column": 5,
+      "sourceBox": [
+        631,
+        625,
+        763,
+        758
+      ],
+      "size": [
+        151,
+        153
+      ],
+      "destination": [
+        980,
+        1077
+      ]
+    },
+    {
+      "row": 5,
+      "column": 6,
+      "sourceBox": [
+        763,
+        625,
+        870,
+        761
+      ],
+      "size": [
+        123,
+        156
+      ],
+      "destination": [
+        1186,
+        1074
+      ]
+    },
+    {
+      "row": 5,
+      "column": 7,
+      "sourceBox": [
+        881,
+        623,
+        1009,
+        758
+      ],
+      "size": [
+        147,
+        155
+      ],
+      "destination": [
+        1366,
+        1075
+      ]
+    },
+    {
+      "row": 6,
+      "column": 0,
+      "sourceBox": [
+        9,
+        746,
+        129,
+        893
+      ],
+      "size": [
+        132,
+        162
+      ],
+      "destination": [
+        30,
+        1276
+      ]
+    },
+    {
+      "row": 6,
+      "column": 1,
+      "sourceBox": [
+        137,
+        745,
+        259,
+        890
+      ],
+      "size": [
+        134,
+        160
+      ],
+      "destination": [
+        221,
+        1278
+      ]
+    },
+    {
+      "row": 6,
+      "column": 2,
+      "sourceBox": [
+        256,
+        743,
+        384,
+        890
+      ],
+      "size": [
+        141,
+        162
+      ],
+      "destination": [
+        409,
+        1276
+      ]
+    },
+    {
+      "row": 6,
+      "column": 3,
+      "sourceBox": [
+        396,
+        744,
+        516,
+        893
+      ],
+      "size": [
+        132,
+        164
+      ],
+      "destination": [
+        606,
+        1274
+      ]
+    },
+    {
+      "row": 6,
+      "column": 4,
+      "sourceBox": [
+        514,
+        749,
+        638,
+        891
+      ],
+      "size": [
+        136,
+        156
+      ],
+      "destination": [
+        796,
+        1282
+      ]
+    },
+    {
+      "row": 6,
+      "column": 5,
+      "sourceBox": [
+        635,
+        751,
+        754,
+        891
+      ],
+      "size": [
+        131,
+        154
+      ],
+      "destination": [
+        990,
+        1284
+      ]
+    },
+    {
+      "row": 7,
+      "column": 0,
+      "sourceBox": [
+        0,
+        889,
+        136,
+        1038
+      ],
+      "size": [
+        150,
+        164
+      ],
+      "destination": [
+        21,
+        1482
+      ]
+    },
+    {
+      "row": 7,
+      "column": 1,
+      "sourceBox": [
+        126,
+        902,
+        263,
+        1034
+      ],
+      "size": [
+        151,
+        145
+      ],
+      "destination": [
+        212,
+        1501
+      ]
+    },
+    {
+      "row": 7,
+      "column": 2,
+      "sourceBox": [
+        254,
+        897,
+        390,
+        1036
+      ],
+      "size": [
+        150,
+        153
+      ],
+      "destination": [
+        405,
+        1493
+      ]
+    },
+    {
+      "row": 7,
+      "column": 3,
+      "sourceBox": [
+        379,
+        903,
+        517,
+        1036
+      ],
+      "size": [
+        152,
+        146
+      ],
+      "destination": [
+        596,
+        1500
+      ]
+    },
+    {
+      "row": 7,
+      "column": 4,
+      "sourceBox": [
+        508,
+        896,
+        644,
+        1034
+      ],
+      "size": [
+        150,
+        152
+      ],
+      "destination": [
+        789,
+        1494
+      ]
+    },
+    {
+      "row": 7,
+      "column": 5,
+      "sourceBox": [
+        633,
+        899,
+        763,
+        1034
+      ],
+      "size": [
+        143,
+        149
+      ],
+      "destination": [
+        984,
+        1497
+      ]
+    },
+    {
+      "row": 8,
+      "column": 0,
+      "sourceBox": [
+        9,
+        1026,
+        134,
+        1185
+      ],
+      "size": [
+        129,
+        164
+      ],
+      "destination": [
+        31,
+        1690
+      ]
+    },
+    {
+      "row": 8,
+      "column": 1,
+      "sourceBox": [
+        126,
+        1037,
+        255,
+        1188
+      ],
+      "size": [
+        133,
+        156
+      ],
+      "destination": [
+        221,
+        1698
+      ]
+    },
+    {
+      "row": 8,
+      "column": 2,
+      "sourceBox": [
+        258,
+        1029,
+        386,
+        1187
+      ],
+      "size": [
+        132,
+        163
+      ],
+      "destination": [
+        414,
+        1691
+      ]
+    },
+    {
+      "row": 8,
+      "column": 3,
+      "sourceBox": [
+        390,
+        1035,
+        502,
+        1189
+      ],
+      "size": [
+        116,
+        159
+      ],
+      "destination": [
+        614,
+        1695
+      ]
+    },
+    {
+      "row": 8,
+      "column": 4,
+      "sourceBox": [
+        515,
+        1036,
+        628,
+        1181
+      ],
+      "size": [
+        117,
+        150
+      ],
+      "destination": [
+        805,
+        1704
+      ]
+    },
+    {
+      "row": 8,
+      "column": 5,
+      "sourceBox": [
+        646,
+        1023,
+        754,
+        1180
+      ],
+      "size": [
+        111,
+        162
+      ],
+      "destination": [
+        1000,
+        1692
+      ]
+    },
+    {
+      "row": 9,
+      "column": 0,
+      "sourceBox": [
+        10,
+        1182,
+        120,
+        1325
+      ],
+      "size": [
+        118,
+        153
+      ],
+      "destination": [
+        37,
+        1909
+      ]
+    },
+    {
+      "row": 9,
+      "column": 1,
+      "sourceBox": [
+        138,
+        1179,
+        259,
+        1324
+      ],
+      "size": [
+        130,
+        155
+      ],
+      "destination": [
+        223,
+        1907
+      ]
+    },
+    {
+      "row": 9,
+      "column": 2,
+      "sourceBox": [
+        258,
+        1178,
+        382,
+        1331
+      ],
+      "size": [
+        133,
+        164
+      ],
+      "destination": [
+        413,
+        1898
+      ]
+    },
+    {
+      "row": 9,
+      "column": 3,
+      "sourceBox": [
+        386,
+        1178,
+        519,
+        1325
+      ],
+      "size": [
+        143,
+        158
+      ],
+      "destination": [
+        600,
+        1904
+      ]
+    },
+    {
+      "row": 9,
+      "column": 4,
+      "sourceBox": [
+        512,
+        1185,
+        628,
+        1328
+      ],
+      "size": [
+        124,
+        153
+      ],
+      "destination": [
+        802,
+        1909
+      ]
+    },
+    {
+      "row": 9,
+      "column": 5,
+      "sourceBox": [
+        640,
+        1191,
+        761,
+        1325
+      ],
+      "size": [
+        130,
+        144
+      ],
+      "destination": [
+        991,
+        1918
+      ]
+    },
+    {
+      "row": 9,
+      "column": 6,
+      "sourceBox": [
+        760,
+        1186,
+        883,
+        1328
+      ],
+      "size": [
+        132,
+        152
+      ],
+      "destination": [
+        1182,
+        1910
+      ]
+    },
+    {
+      "row": 9,
+      "column": 7,
+      "sourceBox": [
+        895,
+        1186,
+        1009,
+        1325
+      ],
+      "size": [
+        122,
+        149
+      ],
+      "destination": [
+        1379,
+        1913
+      ]
+    },
+    {
+      "row": 10,
+      "column": 0,
+      "sourceBox": [
+        9,
+        1339,
+        137,
+        1501
+      ],
+      "size": [
+        127,
+        161
+      ],
+      "destination": [
+        32,
+        2109
+      ]
+    },
+    {
+      "row": 10,
+      "column": 1,
+      "sourceBox": [
+        129,
+        1345,
+        263,
+        1501
+      ],
+      "size": [
+        133,
+        155
+      ],
+      "destination": [
+        221,
+        2115
+      ]
+    },
+    {
+      "row": 10,
+      "column": 2,
+      "sourceBox": [
+        255,
+        1344,
+        391,
+        1502
+      ],
+      "size": [
+        135,
+        157
+      ],
+      "destination": [
+        412,
+        2113
+      ]
+    },
+    {
+      "row": 10,
+      "column": 3,
+      "sourceBox": [
+        385,
+        1343,
+        517,
+        1503
+      ],
+      "size": [
+        131,
+        159
+      ],
+      "destination": [
+        606,
+        2111
+      ]
+    },
+    {
+      "row": 10,
+      "column": 4,
+      "sourceBox": [
+        508,
+        1339,
+        628,
+        1502
+      ],
+      "size": [
+        119,
+        162
+      ],
+      "destination": [
+        804,
+        2108
+      ]
+    },
+    {
+      "row": 10,
+      "column": 5,
+      "sourceBox": [
+        635,
+        1343,
+        761,
+        1502
+      ],
+      "size": [
+        125,
+        158
+      ],
+      "destination": [
+        993,
+        2112
+      ]
+    },
+    {
+      "row": 10,
+      "column": 6,
+      "sourceBox": [
+        754,
+        1337,
+        889,
+        1502
+      ],
+      "size": [
+        134,
+        164
+      ],
+      "destination": [
+        1181,
+        2106
+      ]
+    },
+    {
+      "row": 10,
+      "column": 7,
+      "sourceBox": [
+        881,
+        1339,
+        1016,
+        1502
+      ],
+      "size": [
+        134,
+        162
+      ],
+      "destination": [
+        1373,
+        2108
+      ]
+    }
+  ]
+}

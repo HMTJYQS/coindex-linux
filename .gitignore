@@ -1,0 +1,17 @@
+build/
+dist/
+__pycache__/
+*.pyc
+.DS_Store
+# Optional artwork imported from the user's own Codex installation.
+Resources/Pets/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.log
+.env
+.env.*
+*.pem
+*.key
+**/auth.json
+**/pet-preferences.json

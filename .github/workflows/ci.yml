@@ -1,0 +1,32 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: macos-14
+    timeout-minutes: 20
+    env:
+      CODEX_TODO_CODEX: /usr/bin/true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Backend regression tests (no real login or model requests)
+        run: python3 -m unittest discover -s tests -v
+      - name: Swift animation tests
+        run: |
+          mkdir -p build
+          swiftc Sources/PetAnimation.swift tests/pet-animation/main.swift -o build/pet-animation-tests
+          build/pet-animation-tests
+      - name: Universal application
+        run: COINDEX_ARCHS="arm64 x86_64" bash scripts/build.sh
+      - name: Public release privacy and inventory check
+        run: python3 scripts/check-public-release.py
+      - name: Source package
+        run: python3 scripts/package-source.py
