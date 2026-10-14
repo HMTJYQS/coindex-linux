@@ -95,7 +95,7 @@ class DesktopOpenTests(unittest.TestCase):
             child.wait.side_effect = subprocess.TimeoutExpired([str(executable)], 0.5)
             with patch("platforms.sys.platform", "linux"), patch("platforms.subprocess.Popen", return_value=child) as start, patch("platforms.shutil.which") as discover:
                 platforms.open_desktop_thread(THREAD, "local", str(executable))
-            self.assertEqual(start.call_args.args[0], [str(executable), platforms.desktop_thread_url(THREAD, "local")])
+            self.assertEqual(start.call_args.args[0], [str(executable.resolve()), platforms.desktop_thread_url(THREAD, "local")])
             self.assertTrue(start.call_args.kwargs["start_new_session"])
             discover.assert_not_called()
             child.terminate.assert_not_called()
@@ -132,7 +132,7 @@ class LinuxDiscoveryTests(unittest.TestCase):
                 executable.chmod(0o700)
             with patch("connections.sys.platform", "linux"), patch.dict(os.environ, {}, clear=True), patch("connections.shutil.which", return_value=str(cli)):
                 self.assertEqual(codex_path({"codex_app": str(gui)}), str(cli))
-                self.assertEqual(codex_path({"codex_app": str(gui), "codex_cli": str(cli)}), str(cli))
+                self.assertEqual(codex_path({"codex_app": str(gui), "codex_cli": str(cli)}), str(cli.resolve()))
 
     def test_gui_on_path_is_not_mistaken_for_cli(self):
         with tempfile.TemporaryDirectory() as directory:
