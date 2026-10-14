@@ -1,7 +1,11 @@
-"""Check public source and app contents without printing potentially secret values."""
+"""Check public source and release artifacts without printing secret values."""
+import argparse
 import ipaddress
 import json
+from pathlib import Path, PurePosixPath
 import re
+import tarfile
+import zipfile
 from public_files import ROOT, public_files
 
 TOKENS = re.compile(rb"(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|sk-[A-Za-z0-9_-]{30,}|AKIA[A-Z0-9]{16})")
@@ -14,16 +18,16 @@ issues = []
 
 
 def issue(path, category):
-    issues.append({"file": str(path.relative_to(ROOT)), "category": category})
+    try:
+        name = str(path.relative_to(ROOT))
+    except ValueError:
+        name = path.name
+    issues.append({"file": name, "category": category})
 
 
-def check(path):
-    if path.is_symlink() or not path.is_file():
-        issue(path, "missing file or symlink")
-        return
+def check_bytes(path, data):
     if path.name in FORBIDDEN_NAMES or path.suffix in FORBIDDEN_SUFFIXES:
         issue(path, "private file type")
-    data = path.read_bytes()
     if TOKENS.search(data):
         issue(path, "credential-like value")
     if USER_PATH.search(data):
@@ -36,7 +40,7 @@ def check(path):
             if kind in (b"eXIf", b"tEXt", b"zTXt", b"iTXt", b"caBX"):
                 issue(path, "image metadata requiring review")
             offset += length + 12
-    elif path.suffix in (".py", ".swift", ".sh", ".md", ".json", ".yml"):
+    elif path.suffix in (".py", ".swift", ".sh", ".md", ".json", ".yml", ".yaml"):
         for match in IP.findall(data):
             try:
                 address = ipaddress.ip_address(match.decode())
@@ -46,18 +50,83 @@ def check(path):
                 issue(path, "non-example network address")
 
 
-source = public_files()
-for path in source:
-    check(path)
-app = ROOT/"dist/coindex.app"
-if not app.is_dir():
-    issue(app, "public app has not been built")
-else:
-    for path in app.rglob("*"):
-        if path.is_file() or path.is_symlink():
-            check(path)
-    resources = app/"Contents/Resources"
-    if (resources/"Pets").exists():
-        issue(resources/"Pets", "imported Codex artwork in public app")
-print(json.dumps({"public_source_files": len(source), "issues": issues}, indent=2))
-raise SystemExit(bool(issues))
+def check(path):
+    if path.is_symlink() or not path.is_file():
+        issue(path, "missing file or symlink")
+        return
+    check_bytes(path, path.read_bytes())
+
+
+def safe_member(name):
+    path = PurePosixPath(name)
+    return not path.is_absolute() and ".." not in path.parts
+
+
+def check_linux(artifacts, source):
+    wheels = list(artifacts.glob("coindex_linux-*.whl"))
+    archives = list(artifacts.glob("coindex-linux-*-source.tar.gz"))
+    if not wheels:
+        issue(artifacts, "public Linux wheel has not been built")
+    if not archives:
+        issue(artifacts, "public Linux source archive has not been built")
+    modules = {str(p.relative_to(ROOT)) for p in source
+               if p.suffix == ".py" and p.relative_to(ROOT).parts[0] in ("coindex_linux", "backend")}
+    resources = {"coindex_linux/resources/" + name for name in (
+        "Brand/AppIcon.png", "CustomPets/coindex-cat/pet.json",
+        "CustomPets/coindex-cat/spritesheet.png", "LICENSE", "demo.json")}
+    required = modules | resources | {"backend/__init__.py", "backend/service.py",
+                                     "coindex_linux/__init__.py", "coindex_linux/app.py"}
+    for wheel in wheels:
+        with zipfile.ZipFile(wheel) as archive:
+            names = set(archive.namelist())
+            for missing in sorted(required - names):
+                issue(wheel / missing, "required Linux payload is missing")
+            for name in names:
+                metadata = bool(re.fullmatch(r"coindex_linux-[^/]+\.dist-info/(?:METADATA|WHEEL|entry_points\.txt|top_level\.txt|RECORD|LICENSE|licenses/LICENSE)", name))
+                if not safe_member(name) or (name not in required and not metadata):
+                    issue(wheel / name, "file outside the Linux wheel inventory")
+                mode = (archive.getinfo(name).external_attr >> 16) & 0o170000
+                if mode == 0o120000:
+                    issue(wheel / name, "symlink in Linux wheel")
+                check_bytes(wheel / name, archive.read(name))
+    expected_source = {"coindex-linux/" + p.relative_to(ROOT).as_posix() for p in source}
+    for bundle in archives:
+        with tarfile.open(bundle, "r:gz") as archive:
+            members = archive.getmembers()
+            names = {member.name for member in members}
+            if names != expected_source or len(members) != len(expected_source):
+                issue(bundle, "source archive differs from the public inventory")
+            for member in members:
+                if not safe_member(member.name) or not member.isfile():
+                    issue(bundle / member.name, "invalid source archive entry")
+                    continue
+                check_bytes(bundle / member.name, archive.extractfile(member).read())
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--target", choices=("mac", "linux", "source"), default="mac")
+    parser.add_argument("--artifacts", type=Path, default=ROOT / "dist/Linux")
+    args = parser.parse_args()
+    source = public_files()
+    for path in source:
+        check(path)
+    if args.target == "mac":
+        app = ROOT / "dist/coindex.app"
+        if not app.is_dir():
+            issue(app, "public app has not been built")
+        else:
+            for path in app.rglob("*"):
+                if path.is_file() or path.is_symlink():
+                    check(path)
+            resources = app / "Contents/Resources"
+            if (resources / "Pets").exists():
+                issue(resources / "Pets", "imported Codex artwork in public app")
+    elif args.target == "linux":
+        check_linux(args.artifacts, source)
+    print(json.dumps({"target": args.target, "public_source_files": len(source), "issues": issues}, indent=2))
+    return bool(issues)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
