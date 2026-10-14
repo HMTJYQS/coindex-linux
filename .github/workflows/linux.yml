@@ -22,12 +22,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: X11 runtime dependencies for the desktop smoke test
+      - name: Qt graphics and X11 runtime dependencies
         run: |
+          . /etc/os-release
+          COINDEX_GLIB_PACKAGE=libglib2.0-0
+          if [ "$VERSION_ID" = "24.04" ]; then
+            COINDEX_GLIB_PACKAGE=libglib2.0-0t64
+          fi
           sudo apt-get update
-          sudo apt-get install -y libxcb-cursor0 xvfb xauth
+          sudo apt-get install -y "$COINDEX_GLIB_PACKAGE" xvfb xauth \
+            libegl1 libgl1 libopengl0 libfontconfig1 libfreetype6 libdbus-1-3 \
+            libx11-6 libx11-xcb1 libxrender1 libxkbcommon0 libxkbcommon-x11-0 \
+            libxcb1 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
+            libxcb-randr0 libxcb-render0 libxcb-render-util0 libxcb-shape0 \
+            libxcb-shm0 libxcb-sync1 libxcb-xfixes0 libxcb-xkb1 libxcb-util1
       - name: Python dependencies
         run: python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip install .
+      - name: Require Qt Core, Gui, and Widgets before tests
+        run: python3 -c "from PySide6 import QtCore, QtGui, QtWidgets; print('Qt runtime import OK:', QtCore.qVersion())"
       - name: Backend and Qt integration regression (no real model or nudge)
         run: python3 -m unittest discover -s tests -v
       - name: Build wheel and public source bundle; verify privacy inventory
