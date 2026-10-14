@@ -1,0 +1,56 @@
+name: Linux
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      QT_QPA_PLATFORM: offscreen
+      CODEX_TODO_CODEX: /usr/bin/true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: X11 runtime dependencies for the desktop smoke test
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxcb-cursor0 xvfb xauth
+      - name: Python dependencies
+        run: python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip install .
+      - name: Backend and Qt integration regression (no real model or nudge)
+        run: python3 -m unittest discover -s tests -v
+      - name: Build wheel and public source bundle; verify privacy inventory
+        run: python3 scripts/build-linux.py
+      - name: Download install dependencies for an isolated offline install
+        run: python3 -m pip download --dest build/wheelhouse dist/Linux/*.whl pip
+      - name: Install outside source checkout, launch demo, upgrade, uninstall
+        shell: bash
+        run: |
+          TEST_HOME=$(mktemp -d)
+          WHEEL=$(realpath dist/Linux/*.whl)
+          WHEELHOUSE=$(realpath build/wheelhouse)
+          PIP_WHEEL=$(realpath build/wheelhouse/pip-*.whl)
+          HOME="$TEST_HOME" bash scripts/install-linux.sh "$WHEEL" --offline --find-links "$WHEELHOUSE" --pip-wheel "$PIP_WHEEL"
+          cd /tmp
+          HOME="$TEST_HOME" "$TEST_HOME/.local/bin/coindex-linux" --demo --smoke-test
+          xvfb-run -a env QT_QPA_PLATFORM=xcb HOME="$TEST_HOME" "$TEST_HOME/.local/bin/coindex-linux" --demo --smoke-test
+          cd "$GITHUB_WORKSPACE"
+          HOME="$TEST_HOME" bash scripts/install-linux.sh "$WHEEL" --offline --find-links "$WHEELHOUSE" --pip-wheel "$PIP_WHEEL"
+          HOME="$TEST_HOME" bash scripts/uninstall-linux.sh
+          test ! -e "$TEST_HOME/.local/bin/coindex-linux"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coindex-linux-${{ matrix.os }}
+          path: dist/Linux/*
+          if-no-files-found: error
