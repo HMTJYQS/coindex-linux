@@ -1,0 +1,115 @@
+name: Publish Linux release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag matching the package version (vX.Y.Z-linux.N)'
+        required: true
+        type: string
+        default: v1.9.0-linux.1
+permissions:
+  contents: read
+concurrency:
+  group: release-linux-${{ inputs.tag }}
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.repository == 'HMTJYQS/coindex-linux' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    env:
+      QT_QPA_PLATFORM: offscreen
+      CODEX_TODO_CODEX: /usr/bin/true
+      INPUT_TAG: ${{ inputs.tag }}
+    steps:
+      - name: Validate tag input
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$INPUT_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-linux\.[0-9]+$ ]]; then
+            printf '::error::Tag must have the form vX.Y.Z-linux.N\n'
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install build and desktop dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxcb-cursor0 xvfb xauth
+          python3 -m pip install --timeout 90 --retries 5 --upgrade pip setuptools wheel
+          python3 -m pip install --timeout 90 --retries 5 .
+      - name: Match release tag to the installed package version
+        run: |
+          python3 - <<'PY'
+          import importlib.metadata
+          import os
+          base, revision = os.environ["INPUT_TAG"][1:].rsplit("-linux.", 1)
+          expected = base + ".post" + revision
+          actual = importlib.metadata.version("coindex-linux")
+          if actual != expected:
+              raise SystemExit("Tag/package version mismatch: " + expected + " != " + actual)
+          PY
+      - name: Isolated backend and Qt regression tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          TEST_HOME=$(mktemp -d)
+          HOME="$TEST_HOME" XDG_DATA_HOME="$TEST_HOME/data" XDG_CONFIG_HOME="$TEST_HOME/config" XDG_CACHE_HOME="$TEST_HOME/cache" CODEX_HOME="$TEST_HOME/empty-codex" python3 -m unittest discover -s tests -v
+      - name: Build public wheel, source bundle, and checksums
+        run: python3 scripts/build-linux.py
+      - name: Installed X11 demo outside the source checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          TEST_HOME=$(mktemp -d)
+          cd /tmp
+          xvfb-run -a env QT_QPA_PLATFORM=xcb HOME="$TEST_HOME" XDG_DATA_HOME="$TEST_HOME/data" XDG_CONFIG_HOME="$TEST_HOME/config" CODEX_HOME="$TEST_HOME/empty-codex" coindex-linux --demo --smoke-test
+      - name: Create draft, upload without overwriting, verify, and publish
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          RELEASES="$RUNNER_TEMP/coindex-existing-releases.txt"
+          REFS="$RUNNER_TEMP/coindex-existing-tag-refs.txt"
+          gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq '.[].tag_name' > "$RELEASES"
+          gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/$INPUT_TAG" --jq '.[].ref' > "$REFS"
+          if grep -Fxq -- "$INPUT_TAG" "$RELEASES" || grep -Fxq -- "refs/tags/$INPUT_TAG" "$REFS"; then
+            printf '::error::Release or tag already exists. Existing assets will not be overwritten; review the existing release and choose a new version/tag.\n'
+            exit 1
+          fi
+          shopt -s nullglob
+          WHEELS=(dist/Linux/coindex_linux-*.whl)
+          SOURCES=(dist/Linux/coindex-linux-*-source.tar.gz)
+          if [[ ${#WHEELS[@]} -ne 1 || ${#SOURCES[@]} -ne 1 ]]; then
+            printf '::error::Expected exactly one Linux wheel and one source archive.\n'
+            exit 1
+          fi
+          (cd dist/Linux && sha256sum -c SHA256SUMS.txt)
+          NOTES="$RUNNER_TEMP/coindex-linux-release-notes.md"
+          cat > "$NOTES" <<'NOTES'
+          Linux Qt 移植版，基于 Junming-Liang/coindex v1.9.0，保留上游 MIT 许可。
+
+          本次发布前检查：Ubuntu 22.04 runner 上的隔离后端与 Qt 回归、公开源码和 wheel 隐私清单、安装后在源码目录之外的 Xvfb/xcb 演示启动，以及下载资产与本次构建文件逐字节一致性。
+
+          Python 3.10+；PySide6-Essentials 6.8.3。X11 桌面需要 libxcb-cursor0 等系统 Qt 依赖；Ubuntu 可通过 sudo apt-get install libxcb-cursor0 补齐。请按 docs/linux.md 安装，并用 SHA256SUMS.txt 校验 wheel 和 source.tar.gz。
+
+          真实模型调用、真实 SSH 主机连通和真实催办送达未自动测试。Xvfb 是虚拟 X11 显示，不能代表所有实体桌面、Wayland 合成器或托盘环境。Ubuntu 24.04 的状态请查看独立 Linux CI。
+          NOTES
+          printf '\nSource commit: `%s`\n' "$GITHUB_SHA" >> "$NOTES"
+          gh release create "$INPUT_TAG" --repo "$GITHUB_REPOSITORY" --draft --target "$GITHUB_SHA" --title "coindex Linux $INPUT_TAG" --notes-file "$NOTES"
+          gh release upload "$INPUT_TAG" "${WHEELS[0]}" "${SOURCES[0]}" dist/Linux/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY"
+          DOWNLOAD=$(mktemp -d)
+          gh release download "$INPUT_TAG" --repo "$GITHUB_REPOSITORY" --dir "$DOWNLOAD"
+          for ASSET in "${WHEELS[0]}" "${SOURCES[0]}" dist/Linux/SHA256SUMS.txt; do
+            cmp -- "$ASSET" "$DOWNLOAD/$(basename "$ASSET")"
+          done
+          (cd "$DOWNLOAD" && sha256sum -c SHA256SUMS.txt)
+          gh release edit "$INPUT_TAG" --repo "$GITHUB_REPOSITORY" --draft=false
