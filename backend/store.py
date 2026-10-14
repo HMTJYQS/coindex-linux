@@ -8,6 +8,7 @@ import uuid
 
 from analyzer import COPY_VERSION, TASK_POLICY_VERSION
 from connections import normalize_settings, normalize_remote
+from platforms import local_host_name
 
 DEFAULT_SETTINGS = {"automatic": True, "interval_seconds": 1800, "idle_minutes": 10, "batch_size": 6,
                     "history_days": 0, "enabled_hosts": ["mac"], "source_limit": 120,
@@ -520,7 +521,7 @@ class Store:
             c["needs_analysis"] = c["id"] in pending_ids
             conversations.append(c)
         settings = self.settings()
-        configured = {"mac": "这台 Mac", **{r["id"]: r["name"] for r in settings["remote_hosts"]}}
+        configured = {"mac": local_host_name(), **{r["id"]: r["name"] for r in settings["remote_hosts"]}}
         hosts = [dict(dict(r), name=configured[r["id"]]) for r in self.db.execute("SELECT * FROM hosts") if r["id"] in configured]
         from schedule import automatic_state
         nudges = [self.nudge(r[0]) for r in self.db.execute("""SELECT action_id FROM nudges WHERE status IN ('queued','sending','unknown')
