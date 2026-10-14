@@ -5,10 +5,10 @@ import pathlib
 import socket
 import stat
 import struct
-import subprocess
 import time
 import uuid
 from connections import codex_home, desktop_host_id, profile, normalize_remote
+import platforms
 
 
 class NudgeError(RuntimeError):
@@ -237,9 +237,7 @@ def dispatch(task, action_id, ipc_factory=DesktopIPC, open_thread=None, accepted
 
 
 def open_desktop_thread(thread_id, host_id, app=""):
-    from urllib.parse import urlencode
-    url = "codex://threads/"+thread_id+"?"+urlencode({"hostId": host_id})
-    subprocess.run(["/usr/bin/open"] + (["-a", str(pathlib.Path(app).expanduser())] if app else []) + [url], check=True, timeout=5, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return platforms.open_desktop_thread(thread_id, host_id, app)
 
 
 def run_nudge(folder, action_id):
