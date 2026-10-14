@@ -18,6 +18,7 @@ from analyzer import analyze, codex_path, rewrite_task_copy
 from store import Store
 from connections import profile, ssh_command, ssh_aliases, local_check, remote_check, normalize_remote, codex_home
 from schedule import automatic_state, refresh_calendars, refresh_needed, off_duty_state, finish_workday
+from platforms import default_data_dir
 
 
 def collect_host(host, request, settings=None):
@@ -287,7 +288,7 @@ def serve(folder):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data-dir", default=str(pathlib.Path.home() / "Library/Application Support/CodexTodo"))
+    parser.add_argument("--data-dir", default=str(default_data_dir()))
     parser.add_argument("command", choices=["serve", "sync", "snapshot", "act", "diagnostics", "calendar-refresh", "nudge"])
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--collect-only", action="store_true")
