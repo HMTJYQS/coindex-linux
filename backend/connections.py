@@ -257,4 +257,3 @@ def remote_check(entry):
         return json.loads(run.stdout)
     except Exception as error:
         return {"ok": False, "detail": redact(str(error))[:600]}
-条轨迹
