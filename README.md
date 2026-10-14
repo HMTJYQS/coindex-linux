@@ -4,6 +4,8 @@
 
 [下载 Linux 安装包](https://github.com/HMTJYQS/coindex-linux/releases/latest) · [Linux 安装与使用](docs/linux.md) · [上游来源与许可](UPSTREAM.md) · [报告问题](https://github.com/HMTJYQS/coindex-linux/issues)
 
+首次安装 Ubuntu 22.04/24.04 时，请先按 [系统要求](docs/linux.md#系统要求) 安装完整 Qt 运行库（EGL/OpenGL 与 X11/XCB）；Python wheel 不会安装这些系统包。
+
 ```sh
 # 在下载并解压的 Linux 源码包目录中：
 bash scripts/install-linux.sh ../coindex_linux-*.whl
