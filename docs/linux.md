@@ -12,13 +12,30 @@
 
 安装脚本使用用户级目录，不需要 `sudo`。缺少 `ensurepip` 的 Ubuntu Python 也可使用：脚本创建不含 pip 的 venv，然后用系统 pip 将 pip 安装到该隔离环境。系统 Python 必须已有可运行的 `python3 -m pip`。
 
-Qt 的图形运行库由系统提供。Ubuntu 22.04 的 X11 桌面可能缺少 `libxcb-cursor0`，首次启动前可安装：
+Qt 的图形运行库由系统提供，Python wheel 不会安装这些系统包。即使使用 offscreen，导入 QtGui 也需要 EGL 和 GL。Ubuntu 22.04/24.04 首次运行前安装下列运行库；Ubuntu 24.04 的 GLib 包使用 `t64` 名称：
 
 ```sh
-sudo apt-get install -y libxcb-cursor0
+. /etc/os-release
+COINDEX_GLIB_PACKAGE=libglib2.0-0
+if [ "$VERSION_ID" = "24.04" ]; then
+  COINDEX_GLIB_PACKAGE=libglib2.0-0t64
+fi
+sudo apt-get update
+sudo apt-get install -y "$COINDEX_GLIB_PACKAGE" \
+  libegl1 libgl1 libopengl0 libfontconfig1 libfreetype6 libdbus-1-3 \
+  libx11-6 libx11-xcb1 libxrender1 libxkbcommon0 libxkbcommon-x11-0 \
+  libxcb1 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
+  libxcb-randr0 libxcb-render0 libxcb-render-util0 libxcb-shape0 \
+  libxcb-shm0 libxcb-sync1 libxcb-xfixes0 libxcb-xkb1 libxcb-util1
 ```
 
-应用检测到这个库缺失时会提示安装命令。其他发行版请参考 [Qt 官方 X11 依赖说明](https://doc.qt.io/qt-6/linux-requirements.html)，使用对应系统包；offscreen 自动测试不能替代实际桌面依赖检查。
+安装 coindex 完成后，用安装环境检查 Qt 是否可导入：
+
+```sh
+~/.local/share/coindex-linux/app/venv/bin/python -c "from PySide6 import QtCore, QtGui, QtWidgets; print('Qt runtime import OK:', QtCore.qVersion())"
+```
+
+自定义 XDG/安装目录时请替换解释器路径；自行通过 pip 安装时，使用安装该 wheel 的 Python 环境。其他发行版请参考 [Qt 官方 X11 依赖说明](https://doc.qt.io/qt-6/linux-requirements.html) 选择对应系统包。工作流在测试前强制导入 QtCore、QtGui 和 QtWidgets，缺库时直接失败，避免 Qt 测试因导入失败被跳过；Xvfb/xcb 检查仍需通过。
 
 ## 从 Release 安装
 
@@ -109,7 +126,7 @@ Linux 使用 Qt 主窗口、桌面菜单和可选系统托盘。桌面环境没�
 
 2026-10-14 本机 Ubuntu 22.04 x86_64 验收：186 项测试，185 项通过，1 项因可选上游宠物素材未导入而跳过。全新用户目录离线安装、离开源码目录启动演示、安装后的真实 Qt 子进程任务保存与重启恢复、升级及保留数据卸载均通过。本机 Codex 桌面 IPC 的只读初始化握手通过；没有发送真实催办。
 
-本机 X11 桌面启动验收需先补齐 `libxcb-cursor0`；offscreen 渲染已通过。Ubuntu 22.04/24.04 工作流会分别验证 offscreen 与 Xvfb 的 xcb 启动，远程 CI 成功后再将对应结果作为验证证据。真实模型分析、真实 SSH 主机连通及真实催办送达，需要使用自己的账户与来源进行检查，不在自动测试的完成声明中。
+本机 offscreen 渲染已通过；实体 X11 使用应用私有目录内经过校验的 Ubuntu 官方 `libxcb-cursor0` 库，通过默认启动入口完成演示启动和截图验收。该库采用隔离提取方式加载，未通过系统包管理器全局安装；标准安装仍应补齐上面的系统运行库。Ubuntu 22.04/24.04 工作流会分别验证 offscreen 与 Xvfb 的 xcb 启动，远程 CI 成功后再将对应结果作为验证证据。真实模型分析、真实 SSH 主机连通及真实催办送达，需要使用自己的账户与来源进行检查，不在自动测试的完成声明中。
 
 图形库错误通常会提示缺少 X11/Wayland 系统组件。CI 用 `QT_QPA_PLATFORM=offscreen` 无界面平台测试；正常桌面运行不需要设置该变量。首次设置建议先保存并检查 Codex 连接，确认登录及会话目录可读后再启用自动整理。
 
