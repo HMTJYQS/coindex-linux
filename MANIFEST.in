@@ -1,0 +1,5 @@
+include LICENSE README.md pyproject.toml setup.py
+include scripts/create-demo.py
+include Resources/Brand/AppIcon.png
+include Resources/CustomPets/coindex-cat/pet.json
+include Resources/CustomPets/coindex-cat/spritesheet.png

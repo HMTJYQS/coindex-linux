@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coindex-linux"
+version = "1.9.0.post1"
+description = "Linux Qt desktop port of coindex for following up Codex conversations"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "coindex contributors"}]
+dependencies = ["PySide6-Essentials==6.8.3", "tzdata>=2024.1"]
+classifiers = ["Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License"]
+
+[project.scripts]
+coindex-linux = "coindex_linux.app:main"
+
+[project.urls]
+Homepage = "https://github.com/HMTJYQS/coindex-linux"
+Upstream = "https://github.com/Junming-Liang/coindex"
+
+[tool.setuptools]
+packages = ["coindex_linux", "backend"]
+include-package-data = true

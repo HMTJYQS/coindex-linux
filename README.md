@@ -1,3 +1,27 @@
+# coindex Linux
+
+**Linux 桌面移植版，基于 [Junming-Liang/coindex v1.9.0](https://github.com/Junming-Liang/coindex)。** Qt 界面复用上游 Python 后端，帮助跟进本机与 SSH 机器上的 Codex 对话。Python 3.10+；首版面向 Ubuntu 22.04 x86_64，Ubuntu 24.04 CI 已配置。
+
+[下载 Linux 安装包](https://github.com/HMTJYQS/coindex-linux/releases/latest) · [Linux 安装与使用](docs/linux.md) · [上游来源与许可](UPSTREAM.md) · [报告问题](https://github.com/HMTJYQS/coindex-linux/issues)
+
+```sh
+# 在下载并解压的 Linux 源码包目录中：
+bash scripts/install-linux.sh ../coindex_linux-*.whl
+~/.local/bin/coindex-linux --demo
+```
+
+安装后可从桌面应用菜单打开 coindex Linux。演示模式使用虚构数据，禁用真实分析和催办；实际使用需要已登录的 Codex CLI。安装器支持独立 Python 环境、升级失败回滚和保留数据卸载；详见 [Linux 文档](docs/linux.md)。
+
+![Linux 工作台，使用虚构任务展示分类、详情与小猫](docs/assets/linux-overview.png)
+
+*Qt 界面实际渲染，演示数据不代表真实分析或催办结果。*
+
+Linux 发布检查采用同一公开文件白名单，并检查 wheel 与源码压缩包；本地导入的 Codex 艺术资源、账户凭据及运行数据库不进入公开包。此移植版使用 MIT 许可，并保留原项目来源和版权。
+
+---
+
+以下保留上游 **macOS** 项目介绍、截图和构建说明。Linux 安装及桌面差异请以 [docs/linux.md](docs/linux.md) 为准。
+
 <div align="center">
   <img src="Resources/Brand/AppIcon.png" width="104" alt="coindex icon" />
   <h1>coindex</h1>

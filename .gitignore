@@ -15,3 +15,8 @@ Resources/Pets/
 *.key
 **/auth.json
 **/pet-preferences.json
+
+# Local Python environments and packaging metadata.
+.venv/
+*.egg-info/
+.pytest_cache/
