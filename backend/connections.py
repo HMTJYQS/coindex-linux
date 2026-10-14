@@ -7,6 +7,7 @@ import re
 import shlex
 import shutil
 import subprocess
+import sys
 
 ALIAS = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,252}\Z")
 CLI_SUFFIXES = ("Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
@@ -81,21 +82,30 @@ def codex_path(settings=None):
             return str(candidate.resolve())
         raise RuntimeError("设置的 Codex CLI 无法执行，请重新选择或清空路径以自动发现")
     app = settings.get("codex_app")
+    desktop_executable = None
     if app:
-        for suffix in CLI_SUFFIXES:
-            candidate = pathlib.Path(app).expanduser()/suffix
-            if candidate.is_file() and os.access(candidate, os.X_OK):
-                return str(candidate.resolve())
-        raise RuntimeError("所选应用中找不到 Codex CLI，请选择 CLI 文件或重新选择应用")
+        application = pathlib.Path(app).expanduser()
+        if sys.platform != "darwin" and application.is_file():
+            if not os.access(application, os.X_OK):
+                raise RuntimeError("设置的 Codex 桌面程序无法执行，请重新选择或清空路径")
+            desktop_executable = application.resolve()
+            # A Linux GUI launcher is independent of the analysis CLI. Continue
+            # CLI discovery rather than invoking the GUI with `exec` arguments.
+        else:
+            for suffix in CLI_SUFFIXES:
+                candidate = application/suffix
+                if candidate.is_file() and os.access(candidate, os.X_OK):
+                    return str(candidate.resolve())
+            raise RuntimeError("所选应用中找不到 Codex CLI，请选择 CLI 文件或重新选择应用")
     found = shutil.which("codex")
-    if found:
+    if found and pathlib.Path(found).resolve() != desktop_executable:
         return found
     roots = [pathlib.Path.home()/"Applications", pathlib.Path("/Applications")]
     candidates = [pathlib.Path.home()/p for p in (".local/bin/codex", ".codex/bin/codex", ".npm-global/bin/codex")]
     candidates += sorted((pathlib.Path.home()/".nvm/versions/node").glob("*/bin/codex"), reverse=True)
     candidates += [root/(name+".app")/suffix for root in roots for name in ("Codex", "ChatGPT") for suffix in CLI_SUFFIXES]
     for candidate in candidates:
-        if candidate.is_file() and os.access(candidate, os.X_OK):
+        if candidate.is_file() and os.access(candidate, os.X_OK) and candidate.resolve() != desktop_executable:
             return str(candidate)
     raise RuntimeError("找不到 Codex CLI，请安装并登录 Codex，或在连接设置中选择应用 / CLI")
 
@@ -116,7 +126,10 @@ def desktop_host_id(settings, host):
 
 def ssh_command(entry, interactive=False):
     entry = normalize_remote(entry)
-    args = ["/usr/bin/ssh"]
+    executable = shutil.which("ssh")
+    if not executable:
+        raise RuntimeError("找不到 SSH 客户端，请安装 OpenSSH client 并确保 ssh 位于 PATH 中")
+    args = [executable]
     if not interactive:
         args += ["-T", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8", "-o", "ServerAliveInterval=10",
                  "-o", "ServerAliveCountMax=2", "-o", "StrictHostKeyChecking=yes"]
@@ -234,8 +247,8 @@ print(json.dumps({'ok':ready,'root':str(root),'sessions_ready':ready,'detail':'S
 def remote_check(entry):
     from collector import redact
     entry = normalize_remote(entry)
-    args = ssh_command(entry) + [shlex.quote(entry["python"] or "python3") + " -c " + shlex.quote(REMOTE_CHECK)]
     try:
+        args = ssh_command(entry) + [shlex.quote(entry["python"] or "python3") + " -c " + shlex.quote(REMOTE_CHECK)]
         run = subprocess.run(args, input=json.dumps({"root": entry["codex_home"]}), capture_output=True, text=True, timeout=20)
         if run.returncode:
             detail = redact(run.stderr.strip())[:600] or "SSH 连接失败"
@@ -244,3 +257,4 @@ def remote_check(entry):
         return json.loads(run.stdout)
     except Exception as error:
         return {"ok": False, "detail": redact(str(error))[:600]}
+条轨迹
